@@ -1,4 +1,4 @@
-  var getMessage = function (a, b) {
+var getMessage = function (a, b) {
   if (typeof a == 'boolean') {
     if (a == true) {
       return 'Я попал в ' + b;
