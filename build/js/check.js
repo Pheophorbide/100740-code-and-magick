@@ -1,11 +1,6 @@
 var getMessage = function (a, b) {
   if (typeof a == 'boolean') {
-    if (a == true) {
-      return 'Я попал в ' + b;
-    }
-    else {
-      return 'Я никуда не попал';
-    }
+    return a? ('Я попал в ' + b) : ('Я никуда не попал');
   }
   else if (typeof a == 'number') {
     return 'Я прыгнул на ' + a * 100 + ' сантиметров';
