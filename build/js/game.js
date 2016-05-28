@@ -422,8 +422,8 @@
           break;
         case Verdict.FAIL:
           drawTetragon();
-          this.ctx.fillText('Что-то пошло не так, ', 170, 90);
-          this.ctx.fillText('и вы проиграли:(Попробуйте еще раз!', 170, 120);
+          this.ctx.fillText('Вы проиграли:(', 170, 90);
+          this.ctx.fillText('Попробуйте еще раз!', 170, 120);
           break;
         case Verdict.PAUSE:
           drawTetragon();
@@ -437,7 +437,7 @@
           break;
       }
     },
-    
+
 
     /**
      * Предзагрузка необходимых изображений для уровня.
