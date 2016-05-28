@@ -257,6 +257,42 @@
     this._onKeyUp = this._onKeyUp.bind(this);
     this._pauseListener = this._pauseListener.bind(this);
   };
+  /*
+   * Отрисовка прямоугольного канваса
+   * */
+  var drawTetragon = function() {
+    var canvasElement = document.querySelector('canvas');
+    var ctx = canvasElement.getContext('2d');
+    /*
+     * Черный четырехугольник
+     * */
+    ctx.beginPath();
+    ctx.moveTo(160, 70);
+    ctx.lineTo(560, 70);
+    ctx.lineTo(500, 190);
+    ctx.lineTo(100, 190);
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.stroke();
+    ctx.fill();
+    /*
+     * Белый четырехугольник
+     * */
+    ctx.beginPath();
+    ctx.moveTo(150, 60);
+    ctx.lineTo(550, 60);
+    ctx.lineTo(490, 180);
+    ctx.lineTo(90, 180);
+    ctx.closePath();
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.stroke();
+    ctx.fill();
+    ctx.font = '16px PT Mono';
+    ctx.textBaseline = 'handing';
+    ctx.fillStyle = 'black';
+  };
 
   Game.prototype = {
     /**
@@ -380,19 +416,28 @@
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          drawTetragon();
+          this.ctx.fillText('Вы победили!', 170, 90);
+          this.ctx.fillText('Примите наши поздравления!:)', 170, 120);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          drawTetragon();
+          this.ctx.fillText('Что-то пошло не так, ', 170, 90);
+          this.ctx.fillText('и вы проиграли:(Попробуйте еще раз!', 170, 120);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          drawTetragon();
+          this.ctx.fillText('Пауза!', 180, 90);
+          this.ctx.fillText('Чтобы продолжить игру, нажмите пробел.', 170, 120);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          drawTetragon();
+          this.ctx.fillText('Добро пожаловать в игру!', 170, 90);
+          this.ctx.fillText('Чтобы начать игру, нажмите пробел', 170, 120);
           break;
       }
     },
+    
 
     /**
      * Предзагрузка необходимых изображений для уровня.
