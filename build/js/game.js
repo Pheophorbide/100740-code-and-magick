@@ -260,9 +260,8 @@
   /*
    * Отрисовка прямоугольного канваса
    * */
-  var drawTetragon = function() {
+  var drawTetragon = function(ctx) {
     var canvasElement = document.querySelector('canvas');
-    var ctx = canvasElement.getContext('2d');
     /*
      * Черный четырехугольник
      * */
@@ -414,24 +413,21 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      drawTetragon(this.ctx);
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          drawTetragon();
           this.ctx.fillText('Вы победили!', 170, 90);
           this.ctx.fillText('Примите наши поздравления!:)', 170, 120);
           break;
         case Verdict.FAIL:
-          drawTetragon();
           this.ctx.fillText('Вы проиграли:(', 170, 90);
           this.ctx.fillText('Попробуйте еще раз!', 170, 120);
           break;
         case Verdict.PAUSE:
-          drawTetragon();
           this.ctx.fillText('Пауза!', 180, 90);
           this.ctx.fillText('Чтобы продолжить игру, нажмите пробел.', 170, 120);
           break;
         case Verdict.INTRO:
-          drawTetragon();
           this.ctx.fillText('Добро пожаловать в игру!', 170, 90);
           this.ctx.fillText('Чтобы начать игру, нажмите пробел', 170, 120);
           break;
