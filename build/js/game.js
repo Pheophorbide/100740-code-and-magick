@@ -257,7 +257,64 @@
     this._onKeyUp = this._onKeyUp.bind(this);
     this._pauseListener = this._pauseListener.bind(this);
   };
+  /*
+   * Отрисовка прямоугольного канваса
+   * */
+  var drawTetragon = function(ctx) {
+    /*
+     * Черный четырехугольник
+     * */
+    ctx.beginPath();
+    ctx.moveTo(160, 70);
+    ctx.lineTo(560, 70);
+    ctx.lineTo(500, 190);
+    ctx.lineTo(100, 190);
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.stroke();
+    ctx.fill();
+    /*
+     * Белый четырехугольник
+     * */
+    ctx.beginPath();
+    ctx.moveTo(150, 60);
+    ctx.lineTo(550, 60);
+    ctx.lineTo(490, 180);
+    ctx.lineTo(90, 180);
+    ctx.closePath();
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.stroke();
+    ctx.fill();
+    ctx.font = '16px PT Mono';
+    ctx.textBaseline = 'handing';
+    ctx.fillStyle = 'black';
+  };
 
+  var wrapCanvasText = function(ctx, canvasText, width) {
+    /*Координата от левого края канваса*/
+    var left = 150;
+    /* Координата от верхнего края кнваса*/
+    var top = 90;
+    /*Высота одной строки*/
+    var lineHeight = 30;
+    var line = '';
+    var words = canvasText.split(' ');
+    var countWords = words.length;
+    for (var i = 0; i < countWords; i++ ) {
+      var singleLine = line + words[i] + ' ';
+      var singleLineWidth = ctx.measureText(singleLine).width;
+      if ( singleLineWidth > width) {
+        ctx.fillText(line, left, top);
+        line = words[i] + ' ';
+        top += lineHeight;
+      } else {
+        line = singleLine;
+      }
+    }
+    ctx.fillText(line, left, top);
+  };
   Game.prototype = {
     /**
      * Текущий уровень игры.
@@ -378,21 +435,24 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      drawTetragon(this.ctx);
+      var width = 340;
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          wrapCanvasText(this.ctx, 'Ура! Вы победили:) Примите наши поздравления!', width);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          wrapCanvasText(this.ctx, 'Что-то пошло не так, и вы проиграли:( Попробуйте еще раз!', width);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          wrapCanvasText(this.ctx, 'Пауза! Чтобы продолжить игру, нажмите пробел', width);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          wrapCanvasText(this.ctx, 'Добро пожаловать в игру! Чтобы приступить к игре, нажмите пробел!', width);
           break;
       }
     },
+
 
     /**
      * Предзагрузка необходимых изображений для уровня.
