@@ -261,7 +261,6 @@
    * Отрисовка прямоугольного канваса
    * */
   var drawTetragon = function(ctx) {
-    var canvasElement = document.querySelector('canvas');
     /*
      * Черный четырехугольник
      * */
@@ -293,6 +292,29 @@
     ctx.fillStyle = 'black';
   };
 
+  var wrapCanvasText = function(ctx, canvasText, width) {
+    /*Координата от левого края канваса*/
+    var left = 150;
+    /* Координата от верхнего края кнваса*/
+    var top = 90;
+    /*Высота одной строки*/
+    var lineHeight = 30;
+    var line = '';
+    var words = canvasText.split(' ');
+    var countWords = words.length;
+    for (var i = 0; i < countWords; i++ ) {
+      var singleLine = line + words[i] + ' ';
+      var singleLineWidth = ctx.measureText(singleLine).width;
+      if ( singleLineWidth > width) {
+        ctx.fillText(line, left, top);
+        line = words[i] + ' ';
+        top += lineHeight;
+      } else {
+        line = singleLine;
+      }
+    }
+    ctx.fillText(line, left, top);
+  };
   Game.prototype = {
     /**
      * Текущий уровень игры.
@@ -414,22 +436,19 @@
      */
     _drawPauseScreen: function() {
       drawTetragon(this.ctx);
+      var width = 340;
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          this.ctx.fillText('Вы победили!', 170, 90);
-          this.ctx.fillText('Примите наши поздравления!:)', 170, 120);
+          wrapCanvasText(this.ctx, 'Ура! Вы победили:) Примите наши поздравления!', width);
           break;
         case Verdict.FAIL:
-          this.ctx.fillText('Вы проиграли:(', 170, 90);
-          this.ctx.fillText('Попробуйте еще раз!', 170, 120);
+          wrapCanvasText(this.ctx, 'Что-то пошло не так, и вы проиграли:( Попробуйте еще раз!', width);
           break;
         case Verdict.PAUSE:
-          this.ctx.fillText('Пауза!', 180, 90);
-          this.ctx.fillText('Чтобы продолжить игру, нажмите пробел.', 170, 120);
+          wrapCanvasText(this.ctx, 'Пауза! Чтобы продолжить игру, нажмите пробел', width);
           break;
         case Verdict.INTRO:
-          this.ctx.fillText('Добро пожаловать в игру!', 170, 90);
-          this.ctx.fillText('Чтобы начать игру, нажмите пробел', 170, 120);
+          wrapCanvasText(this.ctx, 'Добро пожаловать в игру! Чтобы приступить к игре, нажмите пробел!', width);
           break;
       }
     },
