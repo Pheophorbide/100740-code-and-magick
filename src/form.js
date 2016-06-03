@@ -7,53 +7,55 @@
   var userName = document.querySelector('.review-form-field-name');
   var reviewMark = document.querySelectorAll('input[name="review-mark"]');
   var reviewText = document.querySelector('.review-form-field-text');
-  var fieldName = document.querySelector('.review-fields-name');
-  var fieldText = document.querySelector('.review-fields-text');
-
+  var reviewFields = document.querySelector('.review-fields');
+  var fieldName = reviewFields.querySelector('.review-fields-name');
+  var fieldText = reviewFields.querySelector('.review-fields-text');
+  var submitButton = document.querySelector('.review-submit');
   userName.setAttribute('required', 'required');
 
-  var estimateReviewMark = function() {
+  var validateReviewMark = function() {
     for (var i = 0; i < reviewMark.length; i++) {
       if (reviewMark[i].checked) {
         if (reviewMark[i].value > 3) {
           reviewText.removeAttribute('required');
+          fieldText.style.display = 'none';
         } else {
           reviewText.setAttribute('required', 'required');
+          fieldText.style.display = 'inline-block';
         }
       }
-      reviewMark[i].onchange = function() {
-        estimateReviewMark();
-      };
     }
-  };
-
-  estimateReviewMark();
-
-  var hideFields = function() {
-    var hideFieldName = function() {
-      if (userName.value.length !== 0) {
+    var validateInputFields = function() {
+      if (userName.validity.valid === true && reviewText.validity.valid === true) {
+        submitButton.removeAttribute('disabled');
+        reviewFields.style.display = 'none';
+      } else if (userName.validity.valid === false || reviewText.validity.valid === false) {
+        submitButton.setAttribute('disabled', 'disabled');
+        reviewFields.style.display = 'inline-block';
+      }
+      if (userName.validity.valid) {
         fieldName.style.display = 'none';
       } else {
         fieldName.style.display = 'inline-block';
       }
-    };
-    userName.oninput = function() {
-      hideFieldName();
-    };
-
-    var hideFieldText = function() {
-      if (reviewText.value.length !== 0) {
+      if (reviewText.validity.valid) {
         fieldText.style.display = 'none';
       } else {
         fieldText.style.display = 'inline-block';
       }
     };
-    reviewText.oninput = function() {
-      hideFieldText();
-    };
+    validateInputFields();
+    userName.oninput = validateInputFields;
+    reviewText.oninput = validateInputFields;
   };
 
-  hideFields();
+
+  for (var i = 0; i < reviewMark.length; i++) {
+    reviewMark[i].onchange = validateReviewMark;
+  }
+  validateReviewMark();
+
+
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
     formContainer.classList.remove('invisible');
