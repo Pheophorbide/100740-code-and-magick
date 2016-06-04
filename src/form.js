@@ -25,35 +25,38 @@
         }
       }
     }
-    var validateInputFields = function() {
-      if (userName.validity.valid === true && reviewText.validity.valid === true) {
-        submitButton.removeAttribute('disabled');
-        reviewFields.style.display = 'none';
-      } else if (userName.validity.valid === false || reviewText.validity.valid === false) {
-        submitButton.setAttribute('disabled', 'disabled');
-        reviewFields.style.display = 'inline-block';
-      }
-      if (userName.validity.valid) {
-        fieldName.style.display = 'none';
-      } else {
-        fieldName.style.display = 'inline-block';
-      }
-      if (reviewText.validity.valid) {
-        fieldText.style.display = 'none';
-      } else {
-        fieldText.style.display = 'inline-block';
-      }
-    };
-    validateInputFields();
-    userName.oninput = validateInputFields;
-    reviewText.oninput = validateInputFields;
   };
 
+  var validateInputFields = function() {
+    if (userName.validity.valid && reviewText.validity.valid) {
+      submitButton.removeAttribute('disabled');
+      reviewFields.style.display = 'none';
+    } else {
+      submitButton.setAttribute('disabled', 'disabled');
+      reviewFields.style.display = 'inline-block';
+    }
+    if (userName.validity.valid) {
+      fieldName.style.display = 'none';
+    } else {
+      fieldName.style.display = 'inline-block';
+    }
+    if (reviewText.validity.valid) {
+      fieldText.style.display = 'none';
+    } else {
+      fieldText.style.display = 'inline-block';
+    }
+  };
+  userName.oninput = validateInputFields;
+  reviewText.oninput = validateInputFields;
 
   for (var i = 0; i < reviewMark.length; i++) {
-    reviewMark[i].onchange = validateReviewMark;
+    reviewMark[i].onchange = function() {
+      validateReviewMark();
+      validateInputFields();
+    };
   }
   validateReviewMark();
+  validateInputFields();
 
 
   formOpenButton.onclick = function(evt) {
