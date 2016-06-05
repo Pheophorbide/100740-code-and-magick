@@ -11,7 +11,37 @@
   var fieldName = reviewFields.querySelector('.review-fields-name');
   var fieldText = reviewFields.querySelector('.review-fields-text');
   var submitButton = document.querySelector('.review-submit');
+  var browserCookies = require('browser-cookies');
+  var reviewForm = document.querySelector('.review-form');
+
   userName.setAttribute('required', 'required');
+
+  var currentDate = new Date();
+  var currentYear = currentDate.getFullYear();
+  var myBday = new Date(currentYear, 3, 13);
+
+  userName.value = browserCookies.get('userName') || '';
+  var currentReviewMark = browserCookies.get('reviewMark');
+  for (var n = 0; n < reviewMark.length; n++) {
+    if (reviewMark[n].value === currentReviewMark) {
+      reviewMark[n].setAttribute('checked', 'checked');
+    }
+  }
+
+  reviewForm.onsubmit = function(evt) {
+    evt.preventDefault();
+    browserCookies.set('userName', userName.value);
+    for (var a = 0; a < reviewMark.length; a++) {
+      reviewMark[a].onchange = function() {
+        if (reviewMark[a].checked) {
+          browserCookies.set('reviewMark', reviewMark[a].value, {
+            expires: (currentDate - myBday) / 1000 / 60 / 60 / 24
+          });
+        }
+      }();
+      this.submit();
+    }
+  };
 
   var validateReviewMark = function() {
     for (var i = 0; i < reviewMark.length; i++) {
