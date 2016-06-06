@@ -1,17 +1,20 @@
 'use strict';
 
 (function() {
+  var browserCookies = require('browser-cookies');
+
+  var CONVERSION_TO_DAY = 1000 * 60 * 60 * 24;
+
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
   var userName = document.querySelector('.review-form-field-name');
-  var reviewMark = document.querySelectorAll('input[name="review-mark"]');
+  var reviewMarks = document.querySelectorAll('input[name="review-mark"]');
   var reviewText = document.querySelector('.review-form-field-text');
   var reviewFields = document.querySelector('.review-fields');
   var fieldName = reviewFields.querySelector('.review-fields-name');
   var fieldText = reviewFields.querySelector('.review-fields-text');
   var submitButton = document.querySelector('.review-submit');
-  var browserCookies = require('browser-cookies');
   var reviewForm = document.querySelector('.review-form');
 
   userName.setAttribute('required', 'required');
@@ -19,34 +22,35 @@
   var currentDate = new Date();
   var currentYear = currentDate.getFullYear();
   var myBday = new Date(currentYear, 3, 13);
+  var cookiesLifeTime = (currentDate - myBday) / CONVERSION_TO_DAY;
 
   userName.value = browserCookies.get('userName') || '';
-  var currentReviewMark = browserCookies.get('reviewMark');
-  for (var n = 0; n < reviewMark.length; n++) {
-    if (reviewMark[n].value === currentReviewMark) {
-      reviewMark[n].setAttribute('checked', 'checked');
+  var currentReviewMarks = browserCookies.get('reviewMarks');
+  for (var n = 0; n < reviewMarks.length; n++) {
+    if (reviewMarks[n].value === currentReviewMarks) {
+      reviewMarks[n].setAttribute('checked', 'checked');
     }
   }
 
   reviewForm.onsubmit = function(evt) {
     evt.preventDefault();
-    browserCookies.set('userName', userName.value);
-    for (var a = 0; a < reviewMark.length; a++) {
-      reviewMark[a].onchange = function() {
-        if (reviewMark[a].checked) {
-          browserCookies.set('reviewMark', reviewMark[a].value, {
-            expires: (currentDate - myBday) / 1000 / 60 / 60 / 24
-          });
-        }
-      }();
-      this.submit();
+    browserCookies.set('userName', userName.value, {
+      expires: cookiesLifeTime
+    });
+    for (var a = 0; a < reviewMarks.length; a++) {
+      if (reviewMarks[a].checked) {
+        browserCookies.set('reviewMarks', reviewMarks[a].value, {
+          expires: cookiesLifeTime
+        });
+      }
     }
+    this.submit();
   };
 
-  var validateReviewMark = function() {
-    for (var i = 0; i < reviewMark.length; i++) {
-      if (reviewMark[i].checked) {
-        if (reviewMark[i].value > 3) {
+  var validatereviewMarks = function() {
+    for (var i = 0; i < reviewMarks.length; i++) {
+      if (reviewMarks[i].checked) {
+        if (reviewMarks[i].value > 3) {
           reviewText.removeAttribute('required');
           fieldText.style.display = 'none';
         } else {
@@ -79,13 +83,13 @@
   userName.oninput = validateInputFields;
   reviewText.oninput = validateInputFields;
 
-  for (var i = 0; i < reviewMark.length; i++) {
-    reviewMark[i].onchange = function() {
-      validateReviewMark();
+  for (var i = 0; i < reviewMarks.length; i++) {
+    reviewMarks[i].onchange = function() {
+      validatereviewMarks();
       validateInputFields();
     };
   }
-  validateReviewMark();
+  validatereviewMarks();
   validateInputFields();
 
 
