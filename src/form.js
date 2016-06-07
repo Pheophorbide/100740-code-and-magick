@@ -3,7 +3,7 @@
 (function() {
   var browserCookies = require('browser-cookies');
 
-  var CONVERSION_TO_DAY = 1000 * 60 * 60 * 24;
+  var DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
@@ -22,7 +22,10 @@
   var currentDate = new Date();
   var currentYear = currentDate.getFullYear();
   var myBday = new Date(currentYear, 3, 13);
-  var cookiesLifeTime = (currentDate - myBday) / CONVERSION_TO_DAY;
+  if (currentDate < myBday) {
+    myBday.setFullYear(currentYear - 1);
+  }
+  var cookiesLifeTime = (currentDate - myBday) / DAY_IN_MILLIS;
 
   userName.value = browserCookies.get('userName') || '';
   var currentReviewMarks = browserCookies.get('reviewMarks');
