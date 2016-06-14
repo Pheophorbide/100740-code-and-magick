@@ -46,7 +46,7 @@
       var loadedData = JSON.parse(evt.target.response);
       callback(loadedData);
     };
-    xhr.onerror = function(){
+    xhr.onerror = function() {
       elementToClone.classList.remove('reviews-load-failure');
     };
     xhr.open('GET', REVIEWS_LIST_URL);
