@@ -16,9 +16,9 @@
     elementToClone = elementTemplate.querySelector('.review');
   }
 
-  var getReviewElement = function(data, container) {
+  var renderReviewElement = function(data) {
     var element = elementToClone.cloneNode(true);
-    container.appendChild(element);
+    reviewsContainer.appendChild(element);
     element.querySelector('.review-text').textContent = data.description;
 
     var ratingValue = data.rating;
@@ -39,7 +39,7 @@
     return element;
   };
 
-  var getReviews = function(callback) {
+  var loadReviews = function(callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function(evt) {
       elementToClone.classList.remove('reviews-list-loading');
@@ -47,7 +47,7 @@
       callback(loadedData);
     };
     xhr.onerror = function() {
-      elementToClone.classList.remove('reviews-load-failure');
+      elementToClone.classList.add('reviews-load-failure');
     };
     xhr.open('GET', REVIEWS_LIST_URL);
     elementToClone.classList.add('reviews-list-loading');
@@ -58,11 +58,11 @@
   var renderReviews = function(reviewsList) {
     reviewsContainer.innerHTML = '';
     reviewsList.forEach(function(review) {
-      getReviewElement(review, reviewsContainer);
+      renderReviewElement(review);
     });
   };
 
-  var getFilteredReviews = function(reviewsList, filter) {
+  var filterReview = function(reviewsList, filter) {
     var reviewToFilter = reviewsList.slice(0);
 
     switch (filter) {
@@ -104,29 +104,21 @@
     return reviewToFilter;
   };
 
-  var setFilterEnabled = function(filter) {
-    var filteredReviews = getFilteredReviews(reviews, filter);
-    renderReviews(filteredReviews);
-  };
-
-  var setFiltrationEnabled = function() {
+  var enableFilters = function() {
     var filters = document.querySelectorAll('input[name="reviews"]');
     for (var i = 0; i < filters.length; i++) {
       filters[i].onclick = function() {
-        setFilterEnabled(this.id);
+        renderReviews(filterReview(reviews, this.id));
       };
     }
   };
 
 
-  getReviews(function(reviewsList) {
+  loadReviews(function(reviewsList) {
     reviews = reviewsList;
     renderReviews(reviews);
-    setFiltrationEnabled();
-    setFilterEnabled();
+    enableFilters();
   });
-
-
   filterContainer.classList.remove('invisible');
 
 })();
