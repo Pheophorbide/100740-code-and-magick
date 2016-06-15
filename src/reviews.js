@@ -18,7 +18,6 @@
 
   var renderReviewElement = function(data) {
     var element = elementToClone.cloneNode(true);
-    reviewsContainer.appendChild(element);
     element.querySelector('.review-text').textContent = data.description;
 
     var ratingValue = data.rating;
@@ -58,7 +57,7 @@
   var renderReviews = function(reviewsList) {
     reviewsContainer.innerHTML = '';
     reviewsList.forEach(function(review) {
-      renderReviewElement(review);
+      reviewsContainer.appendChild(renderReviewElement(review));
     });
   };
 
