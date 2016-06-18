@@ -22,7 +22,7 @@
 
   var renderReviewElement = function(data) {
     var element = elementToClone.cloneNode(true);
-    element.querySelector('.review-text').textContent = data.date;
+    element.querySelector('.review-text').textContent = data.description;
 
     var ratingValue = data.rating;
     var ratingWidth = SINGLE_STAR_WIDTH * ratingValue;
