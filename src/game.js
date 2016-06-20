@@ -741,6 +741,43 @@
   window.Game = Game;
   window.Game.Verdict = Verdict;
 
+  var clouds = document.querySelector('.header-clouds');
+
+  var defaultBackgroundPosition = 50;
+  var THROTTLE_DELAY = 1;
+  var lastCall = Date.now();
+
+  var setParallax = function() {
+      var relativeScrollPosition = (window.pageYOffset/window.innerHeight)*100;
+      clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
+  };
+  var isCloudsVisible = function () {
+    var cloudsPosition = clouds.getBoundingClientRect();
+    if(Date.now() - lastCall >= THROTTLE_DELAY){
+      if(cloudsPosition.bottom <= 100) {
+        window.removeEventListener('scroll', setParallax);
+
+      } else {
+        window.addEventListener('scroll', setParallax);
+      }
+    }
+    lastCall = Date.now()
+  };
+  var isGameVisible = function () {
+    var gameContainer = document.querySelector('.demo');
+    var gameContainerPosition = gameContainer.getBoundingClientRect();
+    if(Date.now() - lastCall >= THROTTLE_DELAY){
+      if(gameContainerPosition.bottom <= 100) {
+        game.setGameStatus(Game.Verdict.PAUSE);
+      }
+    }
+    lastCall = Date.now()
+  };
+  window.addEventListener('scroll', isCloudsVisible);
+  window.addEventListener('scroll', isGameVisible);
+    window.addEventListener('scroll', setParallax);
+
+
   var game = new Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
