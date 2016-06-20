@@ -107,7 +107,7 @@
         filteredReviews = filterReview(reviews, target.id);
         pageNumber = 0;
         renderReviews(filteredReviews, pageNumber, true);
-        updeteReviewsButtonState();
+        updateReviewsButtonState();
       }
     });
   };
@@ -124,13 +124,9 @@
       reviewsContainer.appendChild(renderReviewElement(review));
     });
   };
-  moreReviews.classList.remove('invisible');
-  var isNextPageAvailable = function(reviewsList, page) {
-    return page < Math.ceil(reviewsList.length / PAGE_SIZE);
-  };
 
-  var updeteReviewsButtonState = function() {
-    if(isNextPageAvailable(filteredReviews, pageNumber + 1)) {
+  var updateReviewsButtonState = function() {
+    if(pageNumber + 1 < Math.ceil(reviews.length / PAGE_SIZE)) {
       moreReviews.classList.remove('invisible');
     } else {
       moreReviews.classList.add('invisible');
@@ -140,7 +136,7 @@
   moreReviews.addEventListener('click', function() {
     pageNumber++;
     renderReviews(filteredReviews, pageNumber);
-    updeteReviewsButtonState();
+    updateReviewsButtonState();
   });
 
 
