@@ -125,8 +125,10 @@
     });
   };
 
+  moreReviews.classList.remove('invisible');
+
   var updateReviewsButtonState = function() {
-    if(pageNumber + 1 < Math.ceil(reviews.length / PAGE_SIZE)) {
+    if(pageNumber + 1 < Math.ceil(filteredReviews.length / PAGE_SIZE)) {
       moreReviews.classList.remove('invisible');
     } else {
       moreReviews.classList.add('invisible');
