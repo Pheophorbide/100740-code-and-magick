@@ -745,14 +745,14 @@
 
   var defaultBackgroundPosition = 50;
   var GAP = 100;
-  var THROTTLE_DELAY = 1;
+  var THROTTLE_DELAY = 100;
   var lastCall = Date.now();
 
   var setParallax = function() {
     var relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
     clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
   };
-  var isCloudsVisible = function() {
+  var areCloudsVisible = function() {
     var cloudsPosition = clouds.getBoundingClientRect();
     if (Date.now() - lastCall >= THROTTLE_DELAY) {
       if (cloudsPosition.bottom <= GAP) {
@@ -774,7 +774,7 @@
     }
     lastCall = Date.now();
   };
-  window.addEventListener('scroll', isCloudsVisible);
+  window.addEventListener('scroll', areCloudsVisible);
   window.addEventListener('scroll', isGameVisible);
   window.addEventListener('scroll', setParallax);
 
