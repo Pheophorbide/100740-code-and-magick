@@ -743,15 +743,13 @@
 
   var clouds = document.querySelector('.header-clouds');
   var gameContainer = document.querySelector('.demo');
-  var relativeScrollPosition;
-
 
   var defaultBackgroundPosition = 50;
   var GAP = 100;
   var THROTTLE_DELAY = 100;
 
   var setParallax = function() {
-    relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
+    var relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
     clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
   };
 
