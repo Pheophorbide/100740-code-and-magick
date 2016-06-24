@@ -742,38 +742,48 @@
   window.Game.Verdict = Verdict;
 
   var clouds = document.querySelector('.header-clouds');
+  var gameContainer = document.querySelector('.demo');
+  var relativeScrollPosition;
+
 
   var defaultBackgroundPosition = 50;
   var GAP = 100;
   var THROTTLE_DELAY = 100;
-  var lastCall = Date.now();
 
   var setParallax = function() {
-    var relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
+    relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
     clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
   };
+
   var areCloudsVisible = function() {
     var cloudsPosition = clouds.getBoundingClientRect();
-    if (Date.now() - lastCall >= THROTTLE_DELAY) {
-      if (cloudsPosition.bottom <= GAP) {
-        window.removeEventListener('scroll', setParallax);
+    if (cloudsPosition.bottom <= GAP) {
+      window.removeEventListener('scroll', setParallax);
+    } else {
+      window.addEventListener('scroll', setParallax);
+    }
+  };
 
-      } else {
-        window.addEventListener('scroll', setParallax);
-      }
-    }
-    lastCall = Date.now();
-  };
   var isGameVisible = function() {
-    var gameContainer = document.querySelector('.demo');
     var gameContainerPosition = gameContainer.getBoundingClientRect();
-    if (Date.now() - lastCall >= THROTTLE_DELAY) {
-      if (gameContainerPosition.bottom <= GAP) {
-        game.setGameStatus(Game.Verdict.PAUSE);
-      }
+    if (gameContainerPosition.bottom <= GAP) {
+      game.setGameStatus(Game.Verdict.PAUSE);
     }
-    lastCall = Date.now();
   };
+
+  var throttle = function(callback, delay) {
+    var lastCall = Date.now();
+    if (Date.now() - lastCall >= delay) {
+      callback();
+      lastCall = Date.now();
+    }
+  };
+
+  throttle(function() {
+    areCloudsVisible();
+    isGameVisible();
+  }, THROTTLE_DELAY);
+
   window.addEventListener('scroll', areCloudsVisible);
   window.addEventListener('scroll', isGameVisible);
   window.addEventListener('scroll', setParallax);
