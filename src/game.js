@@ -755,7 +755,11 @@
 
   var areCloudsVisible = function() {
     var cloudsPosition = clouds.getBoundingClientRect();
-    if (cloudsPosition.bottom <= GAP) {
+    return cloudsPosition.bottom >= GAP;
+  };
+
+  var moveClouds = function() {
+    if (!areCloudsVisible()) {
       window.removeEventListener('scroll', setParallax);
     } else {
       window.addEventListener('scroll', setParallax);
@@ -771,19 +775,21 @@
 
   var throttle = function(callback, delay) {
     var lastCall = Date.now();
-    if (Date.now() - lastCall >= delay) {
-      callback();
-      lastCall = Date.now();
-    }
+    window.addEventListener('scroll', function() {
+      if (Date.now() - lastCall >= delay) {
+        callback();
+        lastCall = Date.now();
+      }
+    });
   };
 
-  throttle(function() {
+  var optimizedScroll = throttle(function() {
     areCloudsVisible();
     isGameVisible();
   }, THROTTLE_DELAY);
 
-  window.addEventListener('scroll', areCloudsVisible);
-  window.addEventListener('scroll', isGameVisible);
+  window.addEventListener('scroll', optimizedScroll);
+  window.addEventListener('scroll', moveClouds);
   window.addEventListener('scroll', setParallax);
 
   var game = new Game(document.querySelector('.demo'));
