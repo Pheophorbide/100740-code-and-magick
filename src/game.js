@@ -747,6 +747,7 @@
   var defaultBackgroundPosition = 50;
   var GAP = 100;
   var THROTTLE_DELAY = 100;
+  var lastCall = Date.now();
 
   var setParallax = function() {
     var relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
@@ -774,23 +775,19 @@
   };
 
   var throttle = function(callback, delay) {
-    var lastCall = Date.now();
-    window.addEventListener('scroll', function() {
-      if (Date.now() - lastCall >= delay) {
-        callback();
-        lastCall = Date.now();
-      }
-    });
+    if (Date.now() - lastCall >= delay) {
+      callback();
+      lastCall = Date.now();
+    }
   };
 
-  var optimizedScroll = throttle(function() {
-    areCloudsVisible();
-    isGameVisible();
-  }, THROTTLE_DELAY);
-
-  window.addEventListener('scroll', optimizedScroll);
-  window.addEventListener('scroll', moveClouds);
-  window.addEventListener('scroll', setParallax);
+  window.addEventListener('scroll', function() {
+    throttle(function() {
+      areCloudsVisible();
+      isGameVisible();
+    }, THROTTLE_DELAY);
+    moveClouds();
+  });
 
   var game = new Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
