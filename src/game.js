@@ -1,4 +1,5 @@
 'use strict';
+var utilities = require('./utilities');
 
 (function() {
   /**
@@ -746,7 +747,7 @@
 
   var defaultBackgroundPosition = 50;
   var GAP = 100;
-  var THROTTLE_DELAY = 100;
+  var THROTTLE_DELAY = 700;
   var lastCall = Date.now();
 
   var setParallax = function() {
@@ -754,23 +755,11 @@
     clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
   };
 
-  var areCloudsVisible = function() {
-    var cloudsPosition = clouds.getBoundingClientRect();
-    return cloudsPosition.bottom >= GAP;
-  };
-
   var moveClouds = function() {
-    if (!areCloudsVisible()) {
+    if (!utilities.areCloudsVisible(clouds, GAP)) {
       window.removeEventListener('scroll', setParallax);
     } else {
       window.addEventListener('scroll', setParallax);
-    }
-  };
-
-  var isGameVisible = function() {
-    var gameContainerPosition = gameContainer.getBoundingClientRect();
-    if (gameContainerPosition.bottom <= GAP) {
-      game.setGameStatus(Game.Verdict.PAUSE);
     }
   };
 
@@ -783,8 +772,8 @@
 
   window.addEventListener('scroll', function() {
     throttle(function() {
-      areCloudsVisible();
-      isGameVisible();
+      utilities.areCloudsVisible(clouds, GAP);
+      utilities.isGameVisible(gameContainer, GAP, game);
     }, THROTTLE_DELAY);
     moveClouds();
   });
