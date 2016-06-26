@@ -741,6 +741,54 @@
   window.Game = Game;
   window.Game.Verdict = Verdict;
 
+  var clouds = document.querySelector('.header-clouds');
+  var gameContainer = document.querySelector('.demo');
+
+  var defaultBackgroundPosition = 50;
+  var GAP = 100;
+  var THROTTLE_DELAY = 100;
+  var lastCall = Date.now();
+
+  var setParallax = function() {
+    var relativeScrollPosition = (window.pageYOffset / window.innerHeight) * 100;
+    clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
+  };
+
+  var areCloudsVisible = function() {
+    var cloudsPosition = clouds.getBoundingClientRect();
+    return cloudsPosition.bottom >= GAP;
+  };
+
+  var moveClouds = function() {
+    if (!areCloudsVisible()) {
+      window.removeEventListener('scroll', setParallax);
+    } else {
+      window.addEventListener('scroll', setParallax);
+    }
+  };
+
+  var isGameVisible = function() {
+    var gameContainerPosition = gameContainer.getBoundingClientRect();
+    if (gameContainerPosition.bottom <= GAP) {
+      game.setGameStatus(Game.Verdict.PAUSE);
+    }
+  };
+
+  var throttle = function(callback, delay) {
+    if (Date.now() - lastCall >= delay) {
+      callback();
+      lastCall = Date.now();
+    }
+  };
+
+  window.addEventListener('scroll', function() {
+    throttle(function() {
+      areCloudsVisible();
+      isGameVisible();
+    }, THROTTLE_DELAY);
+    moveClouds();
+  });
+
   var game = new Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
