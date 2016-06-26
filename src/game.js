@@ -747,7 +747,7 @@ var utilities = require('./utilities');
 
   var defaultBackgroundPosition = 50;
   var GAP = 100;
-  var THROTTLE_DELAY = 700;
+  var THROTTLE_DELAY = 100;
   var lastCall = Date.now();
 
   var setParallax = function() {
