@@ -1,5 +1,4 @@
 'use strict';
-var utilities = require('./utilities');
 
 (function() {
   /**
@@ -755,8 +754,20 @@ var utilities = require('./utilities');
     clouds.style.backgroundPositionX = defaultBackgroundPosition + relativeScrollPosition + '%';
   };
 
+  var areCloudsVisible = function() {
+    var cloudsPosition = clouds.getBoundingClientRect();
+    return cloudsPosition.bottom >= GAP;
+  };
+
+  var isGameVisible = function() {
+    var gameContainerPosition = gameContainer.getBoundingClientRect();
+    if (gameContainerPosition.bottom <= GAP) {
+      game.setGameStatus(window.Game.Verdict.PAUSE);
+    }
+  };
+
   var moveClouds = function() {
-    if (!utilities.areCloudsVisible(clouds, GAP)) {
+    if (!areCloudsVisible()) {
       window.removeEventListener('scroll', setParallax);
     } else {
       window.addEventListener('scroll', setParallax);
@@ -772,8 +783,8 @@ var utilities = require('./utilities');
 
   window.addEventListener('scroll', function() {
     throttle(function() {
-      utilities.areCloudsVisible(clouds, GAP);
-      utilities.isGameVisible(gameContainer, GAP, game);
+      areCloudsVisible();
+      isGameVisible();
     }, THROTTLE_DELAY);
     moveClouds();
   });

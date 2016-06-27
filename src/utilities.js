@@ -1,33 +1,20 @@
 'use strict';
-var elementTemplate;
-var elementToClone;
 
-
-module.exports = {
-  getElementToClone: function() {
-    elementTemplate = elementTemplate || document.querySelector('template');
-    if ('content' in elementTemplate) {
-      elementToClone = elementTemplate.content.querySelector('.review');
-    } else {
-      elementToClone = elementTemplate.querySelector('.review');
+(function() {
+  module.exports = {
+    load: function(cloneElement, url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function(evt) {
+        cloneElement.classList.remove('reviews-list-loading');
+        var loadedData = JSON.parse(evt.target.response);
+        callback(loadedData);
+      };
+      xhr.onerror = function() {
+        cloneElement.classList.add('reviews-load-failure');
+      };
+      xhr.open('GET', url);
+      cloneElement.classList.add('reviews-list-loading');
+      xhr.send();
     }
-    return elementToClone;
-  },
-  updateReviewsButtonState: function(reviews, page, eventButton, pageSize) {
-    if(page + 1 < Math.ceil(reviews.length / pageSize)) {
-      eventButton.classList.remove('invisible');
-    } else {
-      eventButton.classList.add('invisible');
-    }
-  },
-  areCloudsVisible: function(container, gap) {
-    var cloudsPosition = container.getBoundingClientRect();
-    return cloudsPosition.bottom >= gap;
-  },
-  isGameVisible: function(container, gap, game) {
-    var gameContainerPosition = container.getBoundingClientRect();
-    if (gameContainerPosition.bottom <= gap) {
-      game.setGameStatus(window.Game.Verdict.PAUSE);
-    }
-  }
-};
+  };
+})();
