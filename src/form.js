@@ -11,11 +11,11 @@
   var userName = document.querySelector('.review-form-field-name');
   var reviewMarks = document.querySelectorAll('input[name="review-mark"]');
   var reviewText = document.querySelector('.review-form-field-text');
+  var reviewForm = document.querySelector('.review-form');
   var reviewFields = document.querySelector('.review-fields');
   var fieldName = reviewFields.querySelector('.review-fields-name');
   var fieldText = reviewFields.querySelector('.review-fields-text');
   var submitButton = document.querySelector('.review-submit');
-  var reviewForm = document.querySelector('.review-form');
 
   userName.setAttribute('required', 'required');
 
@@ -49,8 +49,7 @@
     }
     this.submit();
   };
-
-  var validatereviewMarks = function() {
+  var validateReviewMarks = function() {
     for (var i = 0; i < reviewMarks.length; i++) {
       if (reviewMarks[i].checked) {
         if (reviewMarks[i].value > 3) {
@@ -63,7 +62,6 @@
       }
     }
   };
-
   var validateInputFields = function() {
     if (userName.validity.valid && reviewText.validity.valid) {
       submitButton.removeAttribute('disabled');
@@ -83,18 +81,18 @@
       fieldText.style.display = 'inline-block';
     }
   };
+
   userName.oninput = validateInputFields;
   reviewText.oninput = validateInputFields;
 
   for (var i = 0; i < reviewMarks.length; i++) {
     reviewMarks[i].onchange = function() {
-      validatereviewMarks();
+      validateReviewMarks();
       validateInputFields();
     };
   }
-  validatereviewMarks();
+  validateReviewMarks();
   validateInputFields();
-
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();

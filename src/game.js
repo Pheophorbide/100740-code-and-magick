@@ -759,18 +759,18 @@
     return cloudsPosition.bottom >= GAP;
   };
 
+  var isGameVisible = function() {
+    var gameContainerPosition = gameContainer.getBoundingClientRect();
+    if (gameContainerPosition.bottom <= GAP) {
+      game.setGameStatus(window.Game.Verdict.PAUSE);
+    }
+  };
+
   var moveClouds = function() {
     if (!areCloudsVisible()) {
       window.removeEventListener('scroll', setParallax);
     } else {
       window.addEventListener('scroll', setParallax);
-    }
-  };
-
-  var isGameVisible = function() {
-    var gameContainerPosition = gameContainer.getBoundingClientRect();
-    if (gameContainerPosition.bottom <= GAP) {
-      game.setGameStatus(Game.Verdict.PAUSE);
     }
   };
 
