@@ -1,70 +1,75 @@
 'use strict';
 
 (function() {
+  var ESC = 27;
   var gallery = document.querySelector('.overlay-gallery');
   var closeButton = gallery.querySelector('.overlay-gallery-close');
-  var pictures = document.querySelectorAll('.photogallery-image img');
-  var photoContainer = document.querySelector('.photogallery');
   var previewContainer = gallery.querySelector('.overlay-gallery-preview');
   var arrowLeft = gallery.querySelector('.overlay-gallery-control-left');
   var arrowRight = gallery.querySelector('.overlay-gallery-control-right');
-  var galleryActivePicture = 0;
+  var currentNumber = gallery.querySelector('.preview-number-current');
+  var totalNumber = gallery.querySelector('.preview-number-total');
+  var galleryPictures = [];
+  var activePicture = 0;
 
-  var setGalleryPicture = function(pictureNumber) {
-    gallery.querySelector('img').src = pictures[pictureNumber].src;
-  };
-
-  var setActivePicture = function(event) {
-    event.preventDefault();
-    var target = event.target;
-    if (target.tagName === 'IMG') {
-      for (var i = 0; i < pictures.length; i++) {
-        if (pictures[i] === target) {
-          galleryActivePicture = i;
-        }
-      }
-    }
-    showGallery(galleryActivePicture);
-  };
-
-  var moveLeft = function() {
-    if (galleryActivePicture > 0) {
-      galleryActivePicture--;
-    } else {
-      galleryActivePicture = pictures.length - 1;
-    }
-    setGalleryPicture(galleryActivePicture);
-  };
-
-  var showGallery = function(pictureNumber) {
-    gallery.classList.remove('invisible');
-    var preview = new (Image);
+  var showPictures = function(number) {
+    var preview = new Image();
     previewContainer.appendChild(preview);
-    setGalleryPicture(pictureNumber);
-    closeButton.addEventListener('click', hideGallery);
-    window.addEventListener('keydown', function(event) {
-      if (event.keyCode === 27) {
-        hideGallery();
-      }
-    });
+    gallery.querySelector('img').src = galleryPictures[number].src;
+    currentNumber.textContent = number + 1;
+    activePicture = number;
   };
-
-  var hideGallery = function() {
-    gallery.classList.add('invisible');
+  var moveLeft = function() {
+    if (activePicture !== 0) {
+      activePicture--;
+    } else {
+      activePicture = galleryPictures.length - 1;
+    }
+    showPictures(activePicture);
   };
 
   var moveRight = function() {
-    if (galleryActivePicture < pictures.length - 1) {
-      galleryActivePicture++;
+    if (activePicture !== galleryPictures.length - 1) {
+      activePicture++;
     } else {
-      galleryActivePicture = 0;
+      activePicture = 0;
     }
-    setGalleryPicture(galleryActivePicture);
+    showPictures(activePicture);
   };
 
-  photoContainer.addEventListener('click', setActivePicture);
+  var _onDocumentKeyDown = function() {
+    if (event.keyCode === ESC) {
+      _onCloseClick();
+    }
+  };
 
-  arrowRight.addEventListener('click', moveRight);
+  var _onCloseClick = function() {
+    gallery.classList.add('invisible');
+    arrowRight.removeEventListener('click', moveRight);
+    arrowLeft.removeEventListener('click', moveLeft);
+    closeButton.removeEventListener('click', _onCloseClick);
+    window.removeEventListener('keydown', _onDocumentKeyDown);
+  };
 
-  arrowLeft.addEventListener('click', moveLeft);
+
+  module.exports = {
+    //Функция сохраняет массив фотографий
+
+    savePictures: function(pictures) {
+      galleryPictures = pictures;
+      totalNumber.textContent = galleryPictures.length;
+    },
+
+    //Функция Показывает галерею
+
+    showGallery: function(number) {
+      gallery.classList.remove('invisible');
+      arrowRight.addEventListener('click', moveRight);
+      arrowLeft.addEventListener('click', moveLeft);
+      closeButton.addEventListener('click', _onCloseClick);
+      window.addEventListener('keydown', _onDocumentKeyDown);
+      showPictures(number);
+    }
+  };
 })();
+
