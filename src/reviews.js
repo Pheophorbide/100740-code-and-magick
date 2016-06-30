@@ -1,21 +1,21 @@
 'use strict';
 
 var sort = require('./sort');
-var renderElement = require('./render-reviews');
 var utilities = require('./utilities');
+var Review = require('./single-review');
 
 (function() {
-
+  var elementTemplate = document.querySelector('template');
   var REVIEWS_LIST_URL = '//o0.github.io/assets/json/reviews.json';
   var PAGE_SIZE = 3;
-  var reviewsContainer = document.querySelector('.reviews-list');
   var moreReviews = document.querySelector('.reviews-controls-more');
   var filterContainer = document.querySelector('.reviews-filter');
-  var elementTemplate = document.querySelector('template');
-  var elementToClone;
   var reviews = [];
   var filteredReviews = [];
+  var renderedReviews = [];
+  var elementToClone;
   var pageNumber = 0;
+
 
   filterContainer.classList.add('invisible');
 
@@ -42,11 +42,14 @@ var utilities = require('./utilities');
     var from = page * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     if(replace) {
-      reviewsContainer.innerHTML = '';
+      renderedReviews.forEach(function(review) {
+        review.remove();
+      });
+      renderedReviews = [];
     }
     var slicedFilteredReviews = filteredReviews.slice(from, to);
     slicedFilteredReviews.forEach(function(review) {
-      reviewsContainer.appendChild(renderElement(elementToClone, review));
+      renderedReviews.push(new Review(review, elementToClone));
     });
   };
 
