@@ -5,17 +5,17 @@ var utilities = require('./utilities');
 var Review = require('./single-review');
 
 (function() {
-  var elementTemplate = document.querySelector('template');
+
   var REVIEWS_LIST_URL = '//o0.github.io/assets/json/reviews.json';
   var PAGE_SIZE = 3;
   var moreReviews = document.querySelector('.reviews-controls-more');
   var filterContainer = document.querySelector('.reviews-filter');
+  var elementTemplate = document.querySelector('template');
   var reviews = [];
   var filteredReviews = [];
   var renderedReviews = [];
-  var elementToClone;
   var pageNumber = 0;
-
+  var elementToClone;
 
   filterContainer.classList.add('invisible');
 
