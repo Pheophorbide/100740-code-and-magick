@@ -5,4 +5,4 @@ require('./game');
 require('./reviews');
 require('./gallery.js');
 require('./show-gallery');
-require('./single-review');
+require('./render-reviews');

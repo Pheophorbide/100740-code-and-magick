@@ -2,7 +2,7 @@
 
 var sort = require('./sort');
 var utilities = require('./utilities');
-var Review = require('./single-review');
+var Review = require('./render-reviews');
 
 (function() {
 
@@ -10,20 +10,12 @@ var Review = require('./single-review');
   var PAGE_SIZE = 3;
   var moreReviews = document.querySelector('.reviews-controls-more');
   var filterContainer = document.querySelector('.reviews-filter');
-  var elementTemplate = document.querySelector('template');
   var reviews = [];
   var filteredReviews = [];
   var renderedReviews = [];
   var pageNumber = 0;
-  var elementToClone;
 
   filterContainer.classList.add('invisible');
-
-  if ('content' in elementTemplate) {
-    elementToClone = elementTemplate.content.querySelector('.review');
-  } else {
-    elementToClone = elementTemplate.querySelector('.review');
-  }
 
   var enableFilters = function() {
     filteredReviews = sort.sortReviews(reviews);
@@ -49,7 +41,7 @@ var Review = require('./single-review');
     }
     var slicedFilteredReviews = filteredReviews.slice(from, to);
     slicedFilteredReviews.forEach(function(review) {
-      renderedReviews.push(new Review(review, elementToClone));
+      renderedReviews.push(new Review(review));
     });
   };
 
@@ -69,7 +61,7 @@ var Review = require('./single-review');
     updateReviewsButtonState();
   });
 
-  utilities.load(elementToClone, REVIEWS_LIST_URL, function(reviewsList) {
+  utilities.load(REVIEWS_LIST_URL, function(reviewsList) {
     reviews = reviewsList;
     enableFilters();
     renderReviews(filteredReviews, 0, true);

@@ -1,10 +1,19 @@
 'use strict';
 
 (function() {
-  var SINGLE_STAR_WIDTH = 30;
   var reviewsContainer = document.querySelector('.reviews-list');
+  var SINGLE_STAR_WIDTH = 30;
+  var elementTemplate = document.querySelector('template');
+  var elementToClone;
 
-  var renderReviewElement = function(data, elementToClone) {
+  if ('content' in elementTemplate) {
+    elementToClone = elementTemplate.content.querySelector('.review');
+  } else {
+    elementToClone = elementTemplate.querySelector('.review');
+  }
+
+
+  var renderReviewElement = function(data) {
     var element = elementToClone.cloneNode(true);
     element.querySelector('.review-text').textContent = data.description;
 
@@ -26,11 +35,11 @@
     return element;
   };
 
-  var Review = function(data, container) {
+  var Review = function(data) {
     this.data = data;
-    this.element = renderReviewElement(this.data, container);
+    this.element = renderReviewElement(this.data);
     this.onReviewQuizClick = function(event) {
-      if(event.target.classList.contains('review-quiz-answer')) {
+      if (event.target.classList.contains('review-quiz-answer')) {
         event.target.classList.add('review-quiz-answer-active');
       }
     };
@@ -46,3 +55,4 @@
   module.exports = Review;
 
 })();
+
