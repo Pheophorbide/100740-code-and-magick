@@ -1,19 +1,20 @@
 'use strict';
 
 (function() {
+  var reviewList = document.querySelector('.reviews');
   module.exports = {
-    load: function(cloneElement, url, callback) {
+    load: function(url, callback) {
       var xhr = new XMLHttpRequest();
       xhr.onload = function(evt) {
-        cloneElement.classList.remove('reviews-list-loading');
+        reviewList.classList.remove('reviews-list-loading');
         var loadedData = JSON.parse(evt.target.response);
         callback(loadedData);
       };
       xhr.onerror = function() {
-        cloneElement.classList.add('reviews-load-failure');
+        reviewList.classList.add('reviews-load-failure');
       };
       xhr.open('GET', url);
-      cloneElement.classList.add('reviews-list-loading');
+      reviewList.classList.add('reviews-list-loading');
       xhr.send();
     }
   };
