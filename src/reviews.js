@@ -17,8 +17,14 @@ var Review = require('./render-reviews');
 
   filterContainer.classList.add('invisible');
 
-  var enableFilters = function() {
-    filteredReviews = sort.sortReviews(reviews);
+  var setActiveFilter = function(filter){
+    var activeFilter = document.querySelector('#' + filter);
+    activeFilter.checked = true;
+  };
+
+  var enableFilters = function(filter) {
+    filteredReviews = sort.sortReviews(reviews, filter);
+    setActiveFilter(filter);
     filterContainer.addEventListener('click', function(evt) {
       var target = evt.target;
       if (target.nodeName === 'INPUT') {
@@ -26,6 +32,7 @@ var Review = require('./render-reviews');
         pageNumber = 0;
         renderReviews(filteredReviews, pageNumber, true);
         updateReviewsButtonState();
+        localStorage.setItem('filter', target.id);
       }
     });
   };
@@ -63,7 +70,8 @@ var Review = require('./render-reviews');
 
   utilities.load(REVIEWS_LIST_URL, function(reviewsList) {
     reviews = reviewsList;
-    enableFilters();
+    var currentFilter = localStorage.getItem('filter');
+    enableFilters(currentFilter || 'reviews-all');
     renderReviews(filteredReviews, 0, true);
   });
 
