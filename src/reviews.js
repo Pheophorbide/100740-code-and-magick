@@ -17,7 +17,7 @@ var Review = require('./render-reviews');
 
   filterContainer.classList.add('invisible');
 
-  var setActiveFilter = function(filter){
+  var setActiveFilter = function(filter) {
     var activeFilter = document.querySelector('#' + filter);
     activeFilter.checked = true;
   };
