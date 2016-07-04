@@ -9,12 +9,15 @@ var gallery = require('./gallery');
     return pic.src;
   });
 
-
   galleryContainer.addEventListener('click', function(event) {
     var activeNumber = picturesArr.indexOf(event.target);
+    var currentNumber;
+    event.preventDefault();
     if (activeNumber >= 0) {
-      event.preventDefault();
-      gallery.showGallery(activeNumber);
+      currentNumber = activeNumber + 1;
+      var hash = '/img/screenshots/' + currentNumber + '.png';
+      location.hash = 'photo' + hash;
+      gallery.showGallery(currentNumber, hash);
     }
   });
 
