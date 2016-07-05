@@ -10,6 +10,8 @@
   var currentNumber = gallery.querySelector('.preview-number-current');
   var totalNumber = gallery.querySelector('.preview-number-total');
   var activePicture = 0;
+  var galleryPictures = [];
+
 
   var Gallery = function() {
     this.element = document.querySelector('.overlay-gallery');
@@ -17,26 +19,27 @@
     this.showPictures = function(number) {
       var preview = new Image();
       previewContainer.appendChild(preview);
-      this.element.querySelector('img').src = this.galleryPictures[number].src;
+      this.element.querySelector('img').src = galleryPictures[number];
       currentNumber.textContent = number + 1;
       activePicture = number;
     };
+
     this.moveLeft = function() {
       if (activePicture !== 0) {
         activePicture--;
       } else {
-        activePicture = self.galleryPictures.length - 1;
+        activePicture = galleryPictures.length - 1;
       }
-      self.showPictures(activePicture);
+      location.hash = 'photo' + galleryPictures[activePicture];
     };
 
     this.moveRight = function() {
-      if (activePicture !== self.galleryPictures.length - 1) {
+      if (activePicture !== galleryPictures.length - 1) {
         activePicture++;
       } else {
         activePicture = 0;
       }
-      self.showPictures(activePicture);
+      location.hash = 'photo' + galleryPictures[activePicture];
     };
 
     this. _onDocumentKeyDown = function() {
@@ -51,11 +54,35 @@
       arrowLeft.removeEventListener('click', self.moveLeft);
       closeButton.removeEventListener('click', self._onCloseClick);
       window.removeEventListener('keydown', self._onDocumentKeyDown);
+      location.hash = '';
     };
 
     this.savePictures = function(pictures) {
-      self.galleryPictures = pictures;
-      totalNumber.textContent = self.galleryPictures.length;
+      galleryPictures = pictures;
+      totalNumber.textContent = galleryPictures.length;
+      return galleryPictures;
+    };
+
+    this.onHashChange = function() {
+      if (location.hash) {
+        var hash = window.location.hash;
+        var regExp = hash.match(/#photo\/(\S+)/);
+        if (!regExp) {
+          return;
+        }
+        var regExpSrc = '/' + regExp[1];
+        var photoIndex = -1;
+        galleryPictures.forEach(function(pic, index) {
+          if (~pic.indexOf(regExpSrc)) {
+            photoIndex = index;
+          }
+        });
+        if (photoIndex !== -1) {
+          self.showGallery(photoIndex);
+        } else {
+          self._onCloseClick();
+        }
+      }
     };
 
     //Функция Показывает галерею
@@ -73,4 +100,3 @@
   module.exports = new Gallery();
 
 })();
-
