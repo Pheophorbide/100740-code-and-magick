@@ -20,6 +20,7 @@ var gallery = require('./gallery');
       location.hash = 'photo' + hash;
       gallery.showGallery(activeNumber);
     }
+    return false;
   });
 
   gallery.savePictures(picturesArrSrc);

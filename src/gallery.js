@@ -71,7 +71,12 @@
           return;
         }
         var regExpSrc = '/' + regExp[1];
-        var photoIndex = galleryPictures.indexOf(regExpSrc);
+        var photoIndex = -1;
+        galleryPictures.forEach(function(pic, index) {
+          if (~pic.indexOf(regExpSrc)) {
+            photoIndex = index;
+          }
+        });
         if (photoIndex !== -1) {
           self.showGallery(photoIndex);
         } else {
