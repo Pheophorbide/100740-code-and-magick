@@ -64,14 +64,16 @@
     };
 
     this.onHashChange = function() {
-      var hash = window.location.hash;
-      var regExp = hash.match(/#photo\/(\S+)/);
-      var regExpSrc = '/' + regExp[1];
-      var photoIndex = galleryPictures.indexOf(regExpSrc);
-      if (photoIndex !== -1) {
-        self.showGallery(photoIndex);
-      } else {
-        self._onCloseClick();
+      if (location.hash) {
+        var hash = window.location.hash;
+        var regExp = hash.match(/#photo\/(\S+)/);
+        var regExpSrc = '/' + regExp[1];
+        var photoIndex = galleryPictures.indexOf(regExpSrc);
+        if (photoIndex !== -1) {
+          self.showGallery(photoIndex);
+        } else {
+          self._onCloseClick();
+        }
       }
       console.log(hash);
     };
@@ -84,7 +86,6 @@
       arrowLeft.addEventListener('click', self.moveLeft);
       closeButton.addEventListener('click', self._onCloseClick);
       window.addEventListener('keydown', self._onDocumentKeyDown);
-      window.addEventListener('hashchange', self.onHashChange);
       self.showPictures(number);
     };
   };

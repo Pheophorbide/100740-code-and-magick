@@ -7,10 +7,7 @@ var gallery = require('./gallery');
   var galleryContainer = document.querySelector('.photogallery');
   var picturesArr = Array.prototype.slice.call(pictures);
   var picturesArrSrc = picturesArr.map(function(pic) {
-    var arr = pic.src;
-    var split = location.origin;
-    var arrSplit = arr.split(split);
-    return arrSplit[1];
+    return pic.src.replace(location.origin, '');
   });
 
   galleryContainer.addEventListener('click', function(event) {
@@ -26,5 +23,8 @@ var gallery = require('./gallery');
   });
 
   gallery.savePictures(picturesArrSrc);
+  gallery.onHashChange();
+  window.addEventListener('hashchange', self.onHashChange);
+
 
 })();
