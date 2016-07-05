@@ -24,7 +24,7 @@ var gallery = require('./gallery');
 
   gallery.savePictures(picturesArrSrc);
   gallery.onHashChange();
-  window.addEventListener('hashchange', self.onHashChange);
+  window.addEventListener('hashchange', gallery.onHashChange);
 
 
 })();
