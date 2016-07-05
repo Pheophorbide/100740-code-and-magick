@@ -67,6 +67,9 @@
       if (location.hash) {
         var hash = window.location.hash;
         var regExp = hash.match(/#photo\/(\S+)/);
+        if (!regExp) {
+          return;
+        }
         var regExpSrc = '/' + regExp[1];
         var photoIndex = galleryPictures.indexOf(regExpSrc);
         if (photoIndex !== -1) {
@@ -75,7 +78,6 @@
           self._onCloseClick();
         }
       }
-      console.log(hash);
     };
 
     //Функция Показывает галерею
