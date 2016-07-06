@@ -10,6 +10,7 @@ var Review = require('./render-reviews');
   var PAGE_SIZE = 3;
   var moreReviews = document.querySelector('.reviews-controls-more');
   var filterContainer = document.querySelector('.reviews-filter');
+  var reviewsContainer = document.querySelector('.reviews-list');
   var reviews = [];
   var filteredReviews = [];
   var renderedReviews = [];
@@ -48,7 +49,7 @@ var Review = require('./render-reviews');
     }
     var slicedFilteredReviews = filteredReviews.slice(from, to);
     slicedFilteredReviews.forEach(function(review) {
-      renderedReviews.push(new Review(review));
+      renderedReviews.push(new Review(review, reviewsContainer));
     });
   };
 

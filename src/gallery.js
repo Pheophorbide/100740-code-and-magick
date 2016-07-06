@@ -1,102 +1,110 @@
 'use strict';
 
 (function() {
-  var ESC = 27;
-  var gallery = document.querySelector('.overlay-gallery');
-  var closeButton = gallery.querySelector('.overlay-gallery-close');
-  var previewContainer = gallery.querySelector('.overlay-gallery-preview');
-  var arrowLeft = gallery.querySelector('.overlay-gallery-control-left');
-  var arrowRight = gallery.querySelector('.overlay-gallery-control-right');
-  var currentNumber = gallery.querySelector('.preview-number-current');
-  var totalNumber = gallery.querySelector('.preview-number-total');
-  var activePicture = 0;
-  var galleryPictures = [];
 
 
-  var Gallery = function() {
-    this.element = document.querySelector('.overlay-gallery');
-    var self = this;
-    this.showPictures = function(number) {
-      var preview = new Image();
-      previewContainer.appendChild(preview);
-      this.element.querySelector('img').src = galleryPictures[number];
-      currentNumber.textContent = number + 1;
-      activePicture = number;
-    };
 
-    this.moveLeft = function() {
-      if (activePicture !== 0) {
-        activePicture--;
-      } else {
-        activePicture = galleryPictures.length - 1;
-      }
-      location.hash = 'photo' + galleryPictures[activePicture];
-    };
+  var Gallery = function(gallery) {
+    this.gallery = gallery;
+    this.closeButton = this.gallery.querySelector('.overlay-gallery-close');
+    this.previewContainer = this.gallery.querySelector('.overlay-gallery-preview');
+    this.arrowLeft = this.gallery.querySelector('.overlay-gallery-control-left');
+    this.arrowRight = this.gallery.querySelector('.overlay-gallery-control-right');
+    this.currentNumber = this.gallery.querySelector('.preview-number-current');
+    this.totalNumber = this.gallery.querySelector('.preview-number-total');
+    this.activePicture = 0;
+    this.galleryPictures = [];
 
-    this.moveRight = function() {
-      if (activePicture !== galleryPictures.length - 1) {
-        activePicture++;
-      } else {
-        activePicture = 0;
-      }
-      location.hash = 'photo' + galleryPictures[activePicture];
-    };
-
-    this. _onDocumentKeyDown = function() {
-      if (event.keyCode === ESC) {
-        self._onCloseClick();
-      }
-    };
-
-    this._onCloseClick = function() {
-      self.element.classList.add('invisible');
-      arrowRight.removeEventListener('click', self.moveRight);
-      arrowLeft.removeEventListener('click', self.moveLeft);
-      closeButton.removeEventListener('click', self._onCloseClick);
-      window.removeEventListener('keydown', self._onDocumentKeyDown);
-      location.hash = '';
-    };
-
-    this.savePictures = function(pictures) {
-      galleryPictures = pictures;
-      totalNumber.textContent = galleryPictures.length;
-      return galleryPictures;
-    };
-
-    this.onHashChange = function() {
-      if (location.hash) {
-        var hash = window.location.hash;
-        var regExp = hash.match(/#photo\/(\S+)/);
-        if (!regExp) {
-          return;
-        }
-        var regExpSrc = '/' + regExp[1];
-        var photoIndex = -1;
-        galleryPictures.forEach(function(pic, index) {
-          if (~pic.indexOf(regExpSrc)) {
-            photoIndex = index;
-          }
-        });
-        if (photoIndex !== -1) {
-          self.showGallery(photoIndex);
-        } else {
-          self._onCloseClick();
-        }
-      }
-    };
-
-    //Функция Показывает галерею
-
-    this.showGallery = function(number) {
-      this.element.classList.remove('invisible');
-      arrowRight.addEventListener('click', self.moveRight);
-      arrowLeft.addEventListener('click', self.moveLeft);
-      closeButton.addEventListener('click', self._onCloseClick);
-      window.addEventListener('keydown', self._onDocumentKeyDown);
-      self.showPictures(number);
-    };
+    this.moveLeft = this.moveLeft.bind(this);
+    this.moveRight = this.moveRight.bind(this);
+    this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
+    this._onCloseClick = this._onCloseClick.bind(this);
+    this.savePictures = this.savePictures.bind(this);
+    this.onHashChange = this.onHashChange.bind(this);
+    this.showGallery = this.showGallery.bind(this);
   };
 
-  module.exports = new Gallery();
+  Gallery.prototype.showPictures = function(number) {
+    var preview = new Image();
+    this.previewContainer.appendChild(preview);
+    this.gallery.querySelector('img').src = this.galleryPictures[number];
+    this.currentNumber.textContent = number + 1;
+    this.activePicture = number;
+  };
+
+  Gallery.prototype.moveLeft = function() {
+    if (this.activePicture !== 0) {
+      this.activePicture--;
+    } else {
+      this.activePicture = this.galleryPictures.length - 1;
+    }
+    location.hash = 'photo' + this.galleryPictures[this.activePicture];
+  };
+
+  Gallery.prototype.moveRight = function() {
+    if (this.activePicture !== this.galleryPictures.length - 1) {
+      this.activePicture++;
+    } else {
+      this.activePicture = 0;
+    }
+    location.hash = 'photo' + this.galleryPictures[this.activePicture];
+  };
+
+  Gallery.prototype._onDocumentKeyDown = function() {
+    var ESC = 27;
+    if (event.keyCode === ESC) {
+      this._onCloseClick();
+    }
+  };
+
+  Gallery.prototype._onCloseClick = function() {
+    this.gallery.classList.add('invisible');
+    this.arrowRight.removeEventListener('click', this.moveRight);
+    this.arrowLeft.removeEventListener('click', this.moveLeft);
+    this.closeButton.removeEventListener('click', this._onCloseClick);
+    window.removeEventListener('keydown', this._onDocumentKeyDown);
+    location.hash = '';
+  };
+
+  Gallery.prototype.savePictures = function(pictures) {
+    this.galleryPictures = pictures;
+    this.totalNumber.textContent = this.galleryPictures.length;
+    return this.galleryPictures;
+  };
+
+  Gallery.prototype.onHashChange = function() {
+    if (location.hash) {
+      var hash = window.location.hash;
+      var regExp = hash.match(/#photo\/(\S+)/);
+      if (!regExp) {
+        return;
+      }
+      var regExpSrc = '/' + regExp[1];
+      var photoIndex = -1;
+      this.galleryPictures.forEach(function(pic, index) {
+        if (~pic.indexOf(regExpSrc)) {
+          photoIndex = index;
+        }
+      });
+      if (photoIndex !== -1) {
+        this.showGallery(photoIndex);
+      } else {
+        this._onCloseClick();
+      }
+    }
+  };
+
+  //Функция Показывает галерею
+
+  Gallery.prototype.showGallery = function(number) {
+    this.gallery.classList.remove('invisible');
+    this.arrowRight.addEventListener('click', this.moveRight);
+    this.arrowLeft.addEventListener('click', this.moveLeft);
+    this.closeButton.addEventListener('click', this._onCloseClick);
+    window.addEventListener('keydown', this._onDocumentKeyDown);
+    this.showPictures(number);
+  };
+
+  module.exports = Gallery;
 
 })();
