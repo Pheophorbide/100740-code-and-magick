@@ -1,7 +1,6 @@
 'use strict';
 
 (function() {
-  var reviewsContainer = document.querySelector('.reviews-list');
   var SINGLE_STAR_WIDTH = 30;
   var elementTemplate = document.querySelector('template');
   var elementToClone;
@@ -35,21 +34,33 @@
     return element;
   };
 
-  var Review = function(data) {
+  var Review = function(data, container) {
     this.data = data;
     this.element = renderReviewElement(this.data);
-    this.onReviewQuizClick = function(event) {
-      if (event.target.classList.contains('review-quiz-answer')) {
-        event.target.classList.add('review-quiz-answer-active');
-      }
-    };
+    this.container = container;
 
-    this.element.querySelector('.review-quiz').addEventListener('click', this.onReviewQuizClick);
-    reviewsContainer.appendChild(this.element);
-    this.remove = function() {
-      this.element.querySelector('.review-quiz').removeEventListener('click', this.onReviewQuizClick);
-      reviewsContainer.removeChild(this.element);
-    };
+    this.createElement(this.container, this.element);
+    this.onReviewQuizClick = this.onReviewQuizClick.bind(this);
+    this.addClickListener(this.element);
+  };
+
+  Review.prototype.onReviewQuizClick = function(event) {
+    if (event.target.classList.contains('review-quiz-answer')) {
+      event.target.classList.add('review-quiz-answer-active');
+    }
+  };
+
+  Review.prototype.createElement = function(container, element) {
+    container.appendChild(element);
+  };
+
+  Review.prototype.addClickListener = function(element) {
+    element.querySelector('.review-quiz').addEventListener('click', this.onReviewQuizClick);
+  };
+
+  Review.prototype.remove = function() {
+    this.element.querySelector('.review-quiz').removeEventListener('click', this.onReviewQuizClick);
+    this.container.removeChild(this.element);
   };
 
   module.exports = Review;
