@@ -6,7 +6,6 @@
 
   var Gallery = function(gallery) {
     this.gallery = gallery;
-    this.ESC = 27;
     this.closeButton = this.gallery.querySelector('.overlay-gallery-close');
     this.previewContainer = this.gallery.querySelector('.overlay-gallery-preview');
     this.arrowLeft = this.gallery.querySelector('.overlay-gallery-control-left');
@@ -52,7 +51,8 @@
   };
 
   Gallery.prototype._onDocumentKeyDown = function() {
-    if (event.keyCode === this.ESC) {
+    var ESC = 27;
+    if (event.keyCode === ESC) {
       this._onCloseClick();
     }
   };
